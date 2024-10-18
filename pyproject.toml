@@ -1,0 +1,26 @@
+[project]
+name = "sa-dump-engine"
+version = "0.1.0"
+description = "Add your description here"
+authors = [
+    { name = "Mitsumasa IMAZU", email = "mits.imaz@gmail.com" }
+]
+dependencies = [
+    "sqlalchemy>=2.0.36",
+]
+readme = "README.md"
+requires-python = ">= 3.8"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.rye]
+managed = true
+dev-dependencies = []
+
+[tool.hatch.metadata]
+allow-direct-references = true
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/sa_dump_engine"]
