@@ -57,6 +57,14 @@ CREATE TABLE user_prefs (
 INSERT INTO user (user_name, email_address, nickname) VALUES (?, ?, ?);
 ```
 
+If you want to ouput the SQL statement to a file, you can call `create_dump_engine` with `output` parameter like below:
+
+```python
+with open('output.sql', 'w') as f:
+    engine = create_dump_engine(dialect_name, output=f)
+    metadata_obj.create_all(engine)
+```
+
 
 ## Dependencies
 

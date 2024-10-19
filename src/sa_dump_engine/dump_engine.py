@@ -1,3 +1,5 @@
+import sys
+
 from sqlalchemy import (
     create_mock_engine,
     Engine,
@@ -9,8 +11,9 @@ class Executor:
     """create_mock_engine で指定する executor でdialectを指定可能にするためのクラス
     """
 
-    def __init__(self, dialect_cls, literal_binds=False):
+    def __init__(self, dialect_cls, output=sys.stdout, literal_binds=False):
         self.dialect_cls = dialect_cls
+        self.output = output
         self.literal_binds = literal_binds
 
     def dump(self, sql, *multiparams, **params):
@@ -25,10 +28,10 @@ class Executor:
                     },
                 )
             ).strip()
-        ))
+        ), file=self.output)
 
 
-def create_dump_engine(dialect_name: str, literal_binds=False) -> Engine:
+def create_dump_engine(dialect_name: str, output=sys.stdout, literal_binds=False) -> Engine:
     """create_mock_engine で指定する executor でdialectを指定可能にするための関数
     """
     url = URL.create(
@@ -36,6 +39,7 @@ def create_dump_engine(dialect_name: str, literal_binds=False) -> Engine:
     )
     executor = Executor(
         dialect_cls=url.get_dialect(),
+        output=output,
         literal_binds=literal_binds,
     )
     return create_mock_engine(url, executor=executor.dump)
