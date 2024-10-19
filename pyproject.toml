@@ -10,6 +10,10 @@ dependencies = [
 ]
 readme = "README.md"
 requires-python = ">= 3.9"
+license = {file = "LICENSE"}
+
+[project.urls]
+Repository = "https://github.com/mitszo/sa-dump-engine"
 
 [build-system]
 requires = ["hatchling"]
