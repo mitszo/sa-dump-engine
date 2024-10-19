@@ -8,18 +8,17 @@ from sqlalchemy import (
 
 
 class Executor:
-    """create_mock_engine で指定する executor でdialectを指定可能にするためのクラス
-    """
 
-    def __init__(self, dialect_cls, output=sys.stdout, literal_binds=False):
+    def __init__(self, dialect_cls, output=sys.stdout, suffix=";", literal_binds=False):
         self.dialect_cls = dialect_cls
         self.output = output
+        self.suffix = suffix
         self.literal_binds = literal_binds
 
     def dump(self, sql, *multiparams, **params):
         """create_mock_engine で指定する executor
         """
-        print('{};\n'.format(
+        print(
             str(
                 sql.compile(
                     dialect=self.dialect_cls(),
@@ -27,11 +26,13 @@ class Executor:
                         "literal_binds": self.literal_binds,
                     },
                 )
-            ).strip()
-        ), file=self.output)
+            ).strip(),
+            file=self.output,
+        )
+        print(self.suffix, file=self.output)
 
 
-def create_dump_engine(dialect_name: str, output=sys.stdout, literal_binds=False) -> Engine:
+def create_dump_engine(dialect_name: str, output=sys.stdout, suffix=";", literal_binds=False) -> Engine:
     """create_mock_engine で指定する executor でdialectを指定可能にするための関数
     """
     url = URL.create(
@@ -40,6 +41,7 @@ def create_dump_engine(dialect_name: str, output=sys.stdout, literal_binds=False
     executor = Executor(
         dialect_cls=url.get_dialect(),
         output=output,
+        suffix=suffix,
         literal_binds=literal_binds,
     )
     return create_mock_engine(url, executor=executor.dump)
