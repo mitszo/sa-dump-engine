@@ -1,3 +1,4 @@
+import io
 import sys
 
 from sqlalchemy import (
@@ -16,7 +17,7 @@ class Executor:
         self.literal_binds = literal_binds
 
     def dump(self, sql, *multiparams, **params):
-        """create_mock_engine で指定する executor
+        """dump SQL statement to output stream.
         """
         print(
             str(
@@ -32,11 +33,21 @@ class Executor:
         print(self.suffix, file=self.output)
 
 
-def create_dump_engine(dialect_name: str, output=sys.stdout, suffix=";", literal_binds=False) -> Engine:
-    """create_mock_engine で指定する executor でdialectを指定可能にするための関数
+def create_dump_engine(
+        dialect_name: str,
+        output: io.TextIOBase = sys.stdout,
+        suffix: str = ";",
+        literal_binds: bool = False) -> Engine:
+    """create mock-engine, which dumps SQL statements to output.
+
+    Args:
+    - dialect_name: str: SQL dialect name. e.g. 'sqlite', 'mysql', 'postgresql'
+    - output: io.TextIOBase: output stream to dump SQL statements
+    - suffix: str: suffix to add to each SQL statement
+    - literal_binds: bool: if True, bind parameters are rendered inline within the statement
     """
     url = URL.create(
-        drivername=dialect_name,  # SQLを出力するだけなら、`dialect+driver` ではなくてもよい。
+        drivername=dialect_name,  # dialect name only. drivername is not required to output SQL statements
     )
     executor = Executor(
         dialect_cls=url.get_dialect(),
